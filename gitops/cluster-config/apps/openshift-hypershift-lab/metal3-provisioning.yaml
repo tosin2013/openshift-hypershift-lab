@@ -12,7 +12,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: gitops/cluster-config/metal3-provisioning
+    path: gitops/cluster-config/metal3-provisioning/overlays/aws-dev
     repoURL: https://github.com/tosin2013/openshift-hypershift-lab.git
     targetRevision: main
   syncPolicy:

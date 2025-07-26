@@ -1,0 +1,9 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: assisted-image-service
+  namespace: multicluster-engine
+  labels:
+    router-type: nlb
+spec:
+  host: assisted-image-service-multicluster-engine.nlb-apps.example.com  # Update with your actual domain

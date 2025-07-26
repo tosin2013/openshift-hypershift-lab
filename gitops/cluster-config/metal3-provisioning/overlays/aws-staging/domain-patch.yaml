@@ -1,0 +1,16 @@
+---
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  name: ingress-controller-with-nlb
+  namespace: openshift-ingress-operator
+spec:
+  domain: nlb-apps.staging.example.com
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: assisted-image-service
+  namespace: multicluster-engine
+spec:
+  host: assisted-image-service-multicluster-engine.nlb-apps.staging.example.com
