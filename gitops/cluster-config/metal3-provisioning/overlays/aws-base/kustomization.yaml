@@ -3,13 +3,8 @@ kind: Kustomization
 
 resources:
   - ../../base
-  - metal3-operator-config.yaml
   - ingresscontroller-nlb.yaml
   - assisted-image-service-route-patch.yaml
-
-labels:
-  - pairs:
-      app.kubernetes.io/instance: aws
 
 patches:
   - path: provisioning-patch.yaml

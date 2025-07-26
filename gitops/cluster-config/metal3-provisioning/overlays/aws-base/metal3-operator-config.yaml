@@ -1,8 +1,0 @@
-apiVersion: operator.openshift.io/v1
-kind: Metal3
-metadata:
-  name: metal3
-spec:
-  managementState: Managed
-  logLevel: Normal
-  operatorLogLevel: Normal
