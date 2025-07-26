@@ -5,7 +5,10 @@ This repository contains the configuration for the OpenShift Virtualization oper
 
 ### Deploy Operator
 ```
-$ kustomize build gitops/cluster-config/openshift-virtualization/operator/overlays/sno 
+$ gitops/cluster-config/openshift-virtualization/operator/overlays/standard
 ```
 
 ### Deploy Instance 
+```
+$ gitops/cluster-config/openshift-virtualization/instance
+```
