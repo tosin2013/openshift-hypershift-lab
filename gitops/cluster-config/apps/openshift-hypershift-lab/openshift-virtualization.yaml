@@ -2,18 +2,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-config
+  name: openshift-virtualization
   namespace: openshift-gitops
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   destination:
-    namespace: openshift-gitops
+    namespace: openshift-cnv
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: gitops/cluster-config/apps/openshift-hypershift-lab
+    path: gitops/cluster-config/openshift-virtualization/operator/overlays/standard
     repoURL: https://github.com/tosin2013/openshift-hypershift-lab.git
     targetRevision: main
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+
