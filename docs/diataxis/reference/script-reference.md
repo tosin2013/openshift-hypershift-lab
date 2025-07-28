@@ -333,6 +333,6 @@ All scripts use consistent error message formatting:
 
 ## See Also
 
-- [Configuration Options](configuration-options.md) - Detailed parameter reference
-- [GitOps Configuration](gitops-configuration.md) - ArgoCD and GitOps setup
-- [Security Configuration](security-configuration.md) - Security settings and certificates
+- [HyperShift Lab Configuration](hypershift-lab-configuration.md) - Complete configuration reference
+- [Architecture Overview](../explanations/architecture-overview.md) - System design and component relationships
+- [Development Setup](../how-to-guides/developer/development-setup.md) - Setting up development environment

@@ -172,4 +172,11 @@ This project follows the same license as the parent OpenShift HyperShift Lab pro
 
 ---
 
+## Related Documentation
+
+- **[Comprehensive User Documentation](../diataxis/README.md)**: Complete Diátaxis framework documentation
+- **[Getting Started with HyperShift Lab](../diataxis/tutorials/getting-started-cluster.md)**: Basic lab usage tutorial
+- **[Fork and Customize Guide](../diataxis/how-to-guides/fork-and-customize.md)**: Adapt the lab for your environment
+- **[Main Project README](../../README.md)**: Project overview and quick start
+
 **Next Steps**: Start with the [Getting Started Tutorial](tutorials/getting-started.md) to deploy your first modular hosted cluster.

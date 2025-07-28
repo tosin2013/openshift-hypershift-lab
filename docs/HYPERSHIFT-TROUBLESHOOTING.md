@@ -131,9 +131,13 @@ oc logs -f deployment/external-dns -n hypershift
 ## 📚 References
 
 - [HyperShift Ingress Wildcard Policy Fix](hypershift-ingress-wildcard-policy-fix.md)
-- [Research Documentation](research-07-26-2025.md)
 - [HyperShift Official Docs](https://hypershift-docs.netlify.app/)
 - [OpenShift Ingress Controller](https://docs.openshift.com/container-platform/latest/networking/ingress-operator.html)
+
+### 🎯 **User-Focused Documentation**
+- **[Complete User Documentation](diataxis/README.md)** - Comprehensive guides following Diátaxis framework
+- **[Deploy to Bare Metal Guide](diataxis/how-to-guides/deploy-to-bare-metal.md)** - Extend to bare metal via RHACM
+- **[HyperShift Lab Design](diataxis/explanations/hypershift-lab-design.md)** - Project philosophy and architecture
 
 ## 🎯 Quick Checklist
 

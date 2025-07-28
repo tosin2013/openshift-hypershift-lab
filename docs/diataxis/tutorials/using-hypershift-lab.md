@@ -241,7 +241,7 @@ Now that you understand the HyperShift Lab:
 1. **Experiment with creating new hosted clusters**
 2. **Deploy applications to different hosted clusters**
 3. **Explore the GitOps workflow** by making configuration changes
-4. **Learn about the underlying scripts** in the [Developer How-To Guides](../how-to-guides/developer/)
+4. **Learn about the underlying scripts** in the [Developer Setup Guide](../how-to-guides/developer/development-setup.md)
 5. **Understand the architecture** in [Architecture Overview](../explanations/architecture-overview.md)
 
 ## Summary

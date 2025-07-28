@@ -256,10 +256,10 @@ https://api.<cluster-name>.<domain>:6443
 
 ## Next Steps
 
-- Learn about [deploying applications](deploy-applications.md)
-- Explore [monitoring cluster health](monitor-cluster-health.md)
-- Understand [storage management](use-storage-resources.md)
-- Review [security configuration](../reference/security-configuration.md)
+- Learn about [creating hosted clusters](create-hosted-cluster.md)
+- Explore [forking and customizing](fork-and-customize.md) the lab for your environment
+- Understand [bare metal deployment](deploy-to-bare-metal.md)
+- Review [HyperShift Lab configuration](../reference/hypershift-lab-configuration.md)
 
 ## Summary
 

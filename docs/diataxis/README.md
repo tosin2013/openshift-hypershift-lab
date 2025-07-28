@@ -11,6 +11,7 @@ This documentation follows the [Diátaxis framework](https://diataxis.fr/) to pr
 - [Using the HyperShift Lab](tutorials/using-hypershift-lab.md) - Working with hosted clusters and GitOps
 - [Accessing Cluster Consoles](tutorials/accessing-consoles.md) - Navigating management and hosted cluster consoles
 - [Working with Hosted Clusters](tutorials/working-with-hosted-clusters.md) - Understanding the hosted cluster architecture
+- [Managing Workloads](tutorials/managing-workloads.md) - Deploying and managing applications
 
 ### 🛠️ How-To Guides (Problem-Oriented)
 **For users solving specific problems with the HyperShift Lab**
@@ -19,10 +20,6 @@ This documentation follows the [Diátaxis framework](https://diataxis.fr/) to pr
 - [Create a New Hosted Cluster](how-to-guides/create-hosted-cluster.md) - Step-by-step hosted cluster creation
 - [Deploy to Bare Metal Clusters](how-to-guides/deploy-to-bare-metal.md) - Extend to bare metal via RHACM Host Inventory
 - [Access Cluster Resources](how-to-guides/access-cluster-resources.md) - Working with management and hosted cluster resources
-- [Use ArgoCD for GitOps](how-to-guides/use-argocd-gitops.md) - Managing clusters through GitOps workflows
-- [Work with External Secrets](how-to-guides/work-with-external-secrets.md) - Managing credentials and secrets
-- [Troubleshoot Hosted Clusters](how-to-guides/troubleshoot-hosted-clusters.md) - Common issues and solutions
-- [Scale Hosted Clusters](how-to-guides/scale-hosted-clusters.md) - Scaling worker nodes and resources
 
 ### 🔧 Developer How-To Guides (Contribution-Oriented)
 **For developers contributing to the OpenShift HyperShift Lab project**
@@ -39,20 +36,12 @@ This documentation follows the [Diátaxis framework](https://diataxis.fr/) to pr
 
 - [HyperShift Lab Configuration](reference/hypershift-lab-configuration.md) - Complete configuration reference
 - [Script Reference](reference/script-reference.md) - All deployment and management scripts
-- [GitOps Configuration](reference/gitops-configuration.md) - ArgoCD applications and ApplicationSets
-- [External Secrets Reference](reference/external-secrets-reference.md) - Credential management configuration
-- [Platform Configuration](reference/platform-configuration.md) - KubeVirt and AWS platform settings
-- [Network and DNS Reference](reference/network-dns-reference.md) - Domain patterns and certificate management
 
 ### 🧠 Explanations (Understanding-Oriented)
 **High-level concepts and design decisions specific to the HyperShift Lab**
 
 - [HyperShift Lab Design](explanations/hypershift-lab-design.md) - Project philosophy and architectural decisions
 - [Architecture Overview](explanations/architecture-overview.md) - System design and component relationships
-- [GitOps Patterns](explanations/gitops-patterns.md) - How GitOps enables hosted cluster management
-- [Progressive Architecture](explanations/progressive-architecture.md) - Foundation → Management → Hosted Clusters evolution
-- [Platform Integration](explanations/platform-integration.md) - KubeVirt and AWS platform strategies
-- [Certificate Management](explanations/certificate-management.md) - Nested subdomain and wildcard certificate approach
 
 ## Audience Separation
 
@@ -68,9 +57,11 @@ This documentation follows the [Diátaxis framework](https://diataxis.fr/) to pr
 
 ## Navigation
 
-- **New to OpenShift clusters?** Start with [Getting Started](tutorials/getting-started-cluster.md)
+- **New to the HyperShift Lab?** Start with [Getting Started](tutorials/getting-started-cluster.md)
+- **Want to use the lab effectively?** Try [Using the HyperShift Lab](tutorials/using-hypershift-lab.md)
 - **Need to solve a specific problem?** Check the [How-To Guides](how-to-guides/)
-- **Want to contribute to the project?** See [Developer How-To Guides](how-to-guides/developer/)
+- **Want to customize for your environment?** See [Fork and Customize](how-to-guides/fork-and-customize.md)
+- **Want to contribute to the project?** See [Developer Setup](how-to-guides/developer/development-setup.md)
 - **Looking for specific information?** Browse the [Reference](reference/) section
 - **Want to understand the system better?** Read the [Explanations](explanations/)
 
@@ -83,4 +74,10 @@ This documentation follows the Diátaxis framework principles:
 3. **Factual Accuracy**: Reference documentation is directly verifiable from code
 4. **Clear Uncertainty**: When making inferences, we state them clearly
 
-For documentation contributions, see [Contributing Code](how-to-guides/developer/contributing-code.md).
+For documentation contributions, see [Development Setup](how-to-guides/developer/development-setup.md).
+
+## Related Documentation
+
+- **[Modular Hosted Clusters Framework](../modular-hosted-clusters/README.md)**: Advanced multi-instance deployment patterns
+- **[Main Project README](../../README.md)**: Project overview and quick start guide
+- **[Technical Documentation](../HYPERSHIFT-TROUBLESHOOTING.md)**: HyperShift-specific troubleshooting and fixes

@@ -343,18 +343,18 @@ sudo apt install -y jq curl git  # Ubuntu
 
 ### Getting Help
 
-- Check the [troubleshooting guide](debugging-issues.md)
 - Review [script reference](../../reference/script-reference.md)
-- See [contributing guidelines](contributing-code.md)
+- Check [HyperShift Lab configuration](../../reference/hypershift-lab-configuration.md)
+- See [architecture overview](../../explanations/architecture-overview.md)
 
 ## Next Steps
 
 Now that your development environment is set up:
 
-1. **Read the [contributing guidelines](contributing-code.md)**
-2. **Learn about [building from source](building-from-source.md)**
-3. **Understand [running tests](running-tests.md)**
-4. **Review the [architecture](../../explanations/architecture-overview.md)**
+1. **Test the deployment scripts** with your AWS credentials
+2. **Explore the [GitOps configurations](../../reference/hypershift-lab-configuration.md)**
+3. **Understand the [project architecture](../../explanations/architecture-overview.md)**
+4. **Try [creating hosted clusters](../create-hosted-cluster.md)** in your environment
 
 ## Summary
 
