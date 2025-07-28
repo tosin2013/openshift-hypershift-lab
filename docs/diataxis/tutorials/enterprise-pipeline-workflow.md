@@ -251,6 +251,111 @@ Enterprise monitoring and validation would include:
 2. **Disaster Recovery**: Backup and restore procedures
 3. **Compliance Automation**: Security and compliance policies
 
+## Implementation Examples
+
+### Example 1: Gen AI Workload Pipeline
+
+**Use Case**: Develop and test AI applications with GPU time-slicing in hosted clusters, then deploy to dedicated GPU bare metal for production.
+
+```bash
+# 1. Test in hosted cluster with GPU time-slicing
+./scripts/create-hosted-cluster-instance.sh --name ai-dev --environment dev
+oc apply -f ai-app-manifests/ --context ai-dev
+
+# 2. Validate and tune
+# - Test model inference performance
+# - Validate GPU resource sharing
+# - Check memory and storage requirements
+# - Test API endpoints and scaling
+
+# 3. Deploy to bare metal (Community Implementation Needed)
+# - Create bare metal GPU cluster via RHACM ZTP
+# - Apply production configurations with dedicated GPUs
+# - Monitor inference performance and costs
+# - Scale based on production demand
+```
+
+**Cost Benefit**: Use shared GPU resources during development, reserve dedicated GPU infrastructure for production workloads.
+
+### Example 2: Machine Learning Training Pipeline
+
+**Use Case**: Develop ML training pipelines with sample datasets, then scale to full training on high-performance bare metal.
+
+```bash
+# 1. Test ML pipeline in hosted cluster with limited resources
+./scripts/create-hosted-cluster-instance.sh --name ml-dev --environment dev
+oc apply -f ml-pipeline-manifests/ --context ml-dev
+
+# 2. Document requirements and validate workflow
+# - Test with small sample datasets (1K-10K rows)
+# - Validate data processing pipelines
+# - Check storage and compute requirements
+# - Test model training and validation workflows
+
+# 3. Deploy to bare metal (Community Implementation Needed)
+# - Create high-performance cluster via RHACM ZTP
+# - Deploy with full datasets (millions of rows)
+# - Use dedicated GPUs and high-speed storage
+# - Monitor training performance and resource usage
+```
+
+**Cost Benefit**: Validate ML workflows on small scale, then scale to full production training only when ready.
+
+### Example 3: Web Application Pipeline
+
+**Use Case**: Standard web application development and testing workflow.
+
+```bash
+# 1. Test in hosted cluster
+./scripts/create-hosted-cluster-instance.sh --name web-app-dev --environment dev
+oc apply -f web-app-manifests/ --context web-app-dev
+
+# 2. Validate and tune
+# - Test load balancing
+# - Validate persistent storage
+# - Check resource requirements
+# - Performance testing with simulated load
+
+# 3. Deploy to bare metal (Community Implementation Needed)
+# - Create bare metal cluster via RHACM ZTP
+# - Apply tuned configurations
+# - Monitor production metrics
+# - Scale based on real user traffic
+```
+
+### Example 4: Database Workload
+
+**Use Case**: Database development and migration workflow.
+
+```bash
+# 1. Test database in hosted cluster with limited resources
+./scripts/create-hosted-cluster-instance.sh --name db-dev --environment dev
+oc apply -f database-manifests/ --context db-dev
+
+# 2. Document storage and performance requirements
+# - Test with sample data
+# - Validate backup and restore procedures
+# - Check storage IOPS and throughput needs
+# - Test high availability configurations
+
+# 3. Deploy to bare metal (Community Implementation Needed)
+# - Create bare metal cluster with high-performance storage
+# - Deploy with production storage configurations
+# - Migrate data from hosted cluster to bare metal
+# - Monitor database performance and optimize
+```
+
+### Implementation Benefits Summary
+
+| Workload Type | Development Phase | Production Phase | Key Benefit |
+|---------------|-------------------|------------------|-------------|
+| **Gen AI** | GPU time-slicing | Dedicated GPUs | Cost-effective GPU development |
+| **ML Training** | Sample datasets | Full-scale training | Validate before expensive training |
+| **Web Apps** | Basic testing | Production load | Standard development workflow |
+| **Databases** | Limited resources | High-performance storage | Safe migration and scaling |
+
+**Enterprise Value**: Test and validate everything in cost-effective hosted clusters before deploying to expensive production infrastructure.
+
 ## How to Contribute
 
 1. **Choose a Component**: Pick from the implementation needed list
