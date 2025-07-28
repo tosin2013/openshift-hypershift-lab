@@ -9,6 +9,7 @@ This documentation follows the [Diátaxis framework](https://diataxis.fr/) to pr
 
 - [Getting Started with OpenShift HyperShift Lab](tutorials/getting-started-cluster.md) - First steps with the lab environment
 - [Using the HyperShift Lab](tutorials/using-hypershift-lab.md) - Working with hosted clusters and GitOps
+- [Enterprise Pipeline Workflow](tutorials/enterprise-pipeline-workflow.md) - Lab → Production pipeline (community implementation needed)
 - [Accessing Cluster Consoles](tutorials/accessing-consoles.md) - Navigating management and hosted cluster consoles
 - [Working with Hosted Clusters](tutorials/working-with-hosted-clusters.md) - Understanding the hosted cluster architecture
 - [Managing Workloads](tutorials/managing-workloads.md) - Deploying and managing applications

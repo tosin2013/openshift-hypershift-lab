@@ -73,83 +73,125 @@ graph TB
     WN3 --> ELB
 ```
 
-### **On-Premises Deployment (Dell/Cisco/HPE Infrastructure)**
+### **Enterprise Pipeline: Lab Clusters → Physical Production (RHACM ZTP)**
 ```mermaid
 graph TB
-    subgraph "On-Premises Data Center"
-        subgraph "Management Cluster (Dell/Cisco/HPE)"
-            MC[Management Cluster<br/>3x Physical Servers<br/>OpenShift + HyperShift]
+    subgraph "Hub Cluster (Management Infrastructure)"
+        subgraph "Management Cluster"
+            MC[Hub Cluster<br/>OpenShift + RHACM + HyperShift]
             ArgoCD[ArgoCD<br/>GitOps Controller]
             ODF[OpenShift Data Foundation<br/>Storage]
-            RHACM[Red Hat ACM<br/>Host Inventory]
+            ZTP[ZTP Pipeline<br/>Zero Touch Provisioning]
         end
 
-        subgraph "Hosted Clusters (Bare Metal)"
-            HC1[dev-cluster-01<br/>Control Plane Pods<br/>Running on Management Cluster]
-            HC2[staging-cluster-01<br/>Control Plane Pods<br/>Running on Management Cluster]
-            HC3[prod-cluster-01<br/>Control Plane Pods<br/>Running on Management Cluster]
+        subgraph "Lab Environment (Hosted Clusters)"
+            LAB[lab-cluster<br/>Control Plane Pods<br/>Development & Testing]
+            DEV[dev-cluster<br/>Control Plane Pods<br/>Application Development]
+            TEST[test-cluster<br/>Control Plane Pods<br/>Integration Testing]
         end
 
-        subgraph "Physical Infrastructure"
-            BM1[Dell PowerEdge Server<br/>Worker Nodes]
-            BM2[Cisco UCS Server<br/>Worker Nodes]
-            BM3[HPE ProLiant Server<br/>Worker Nodes]
-            BM4[Additional Servers<br/>Worker Nodes]
-        end
-
-        subgraph "Network Infrastructure"
-            LB[Load Balancer<br/>HAProxy/F5/Cisco]
-            SW[Network Switch<br/>Cisco/Juniper]
-            FW[Firewall<br/>Palo Alto/Fortinet]
-        end
-
-        subgraph "Storage Infrastructure"
-            SAN[SAN Storage<br/>NetApp/Pure/Dell EMC]
-            NFS[NFS Storage<br/>Shared Storage]
-        end
-
-        subgraph "DNS & External Services"
-            DNS[Internal DNS<br/>Bind/Windows DNS]
-            LDAP[LDAP/AD<br/>Authentication]
+        subgraph "GitOps Repository"
+            GIT[Git Repository<br/>SiteConfig + PolicyGenTemplate<br/>Application Manifests]
         end
     end
 
-    MC --> HC1
-    MC --> HC2
-    MC --> HC3
-    HC1 --> BM1
-    HC2 --> BM2
-    HC3 --> BM3
-    HC1 --> BM4
-    ArgoCD --> HC1
-    ArgoCD --> HC2
-    ArgoCD --> HC3
-    RHACM --> BM1
-    RHACM --> BM2
-    RHACM --> BM3
-    RHACM --> BM4
-    BM1 --> LB
-    BM2 --> LB
-    BM3 --> LB
-    BM4 --> LB
+    subgraph "Physical Production Sites"
+        subgraph "QA Environment"
+            QA_SITE[QA Site<br/>Physical OpenShift Cluster]
+            QA_BM1[Dell PowerEdge<br/>QA Cluster Nodes]
+            QA_BM2[Cisco UCS<br/>QA Cluster Nodes]
+        end
+
+        subgraph "Production Environment"
+            PROD_SITE[Production Site<br/>Physical OpenShift Cluster]
+            PROD_BM1[HPE ProLiant<br/>Production Cluster Nodes]
+            PROD_BM2[Dell PowerEdge<br/>Production Cluster Nodes]
+            PROD_BM3[Cisco UCS<br/>Production Cluster Nodes]
+        end
+
+        subgraph "Edge Sites"
+            EDGE1[Edge Site 1<br/>Single Node OpenShift]
+            EDGE2[Edge Site 2<br/>Single Node OpenShift]
+            EDGE_BM1[Industrial Server<br/>Edge Computing]
+            EDGE_BM2[Ruggedized Hardware<br/>Edge Computing]
+        end
+    end
+
+    subgraph "Enterprise Infrastructure"
+        subgraph "Network & Security"
+            LB[Enterprise Load Balancer<br/>F5/Cisco/HAProxy]
+            FW[Enterprise Firewall<br/>Palo Alto/Fortinet]
+            SW[Core Network Switch<br/>Cisco/Juniper]
+        end
+
+        subgraph "Storage & Services"
+            SAN[Enterprise SAN<br/>NetApp/Pure/Dell EMC]
+            DNS[Corporate DNS<br/>Bind/Windows DNS]
+            LDAP[Identity Management<br/>LDAP/Active Directory]
+        end
+    end
+
+    %% Development Flow
+    MC --> LAB
+    MC --> DEV
+    MC --> TEST
+    ArgoCD --> LAB
+    ArgoCD --> DEV
+    ArgoCD --> TEST
+
+    %% GitOps Flow
+    GIT --> ArgoCD
+    GIT --> ZTP
+
+    %% ZTP Deployment Flow
+    ZTP -.->|SiteConfig + PolicyGenTemplate| QA_SITE
+    ZTP -.->|SiteConfig + PolicyGenTemplate| PROD_SITE
+    ZTP -.->|SiteConfig + PolicyGenTemplate| EDGE1
+    ZTP -.->|SiteConfig + PolicyGenTemplate| EDGE2
+
+    %% Physical Infrastructure
+    QA_SITE --> QA_BM1
+    QA_SITE --> QA_BM2
+    PROD_SITE --> PROD_BM1
+    PROD_SITE --> PROD_BM2
+    PROD_SITE --> PROD_BM3
+    EDGE1 --> EDGE_BM1
+    EDGE2 --> EDGE_BM2
+
+    %% Enterprise Services
+    QA_SITE --> LB
+    PROD_SITE --> LB
+    EDGE1 --> LB
+    EDGE2 --> LB
     LB --> SW
     SW --> FW
     MC --> SAN
-    MC --> NFS
     MC --> DNS
     MC --> LDAP
+
+    %% Workflow Annotations
+    LAB -.->|Develop & Test| GIT
+    DEV -.->|Application Code| GIT
+    TEST -.->|Validation| GIT
 ```
 
 **Key Architecture Benefits:**
-- **🏗️ Centralized Management**: Single management cluster controls multiple hosted clusters
-- **🌐 Flexible Deployment**: Choose between AWS cloud or on-premises infrastructure
-- **🚀 GitOps Automation**: ArgoCD manages all cluster deployments declaratively
-- **📊 Unified Monitoring**: RHACM provides visibility across all clusters
-- **🔒 Enterprise Integration**: Integrate with existing enterprise infrastructure (DNS, LDAP, SAN)
+- **🏗️ Hub-Spoke Management**: Single hub cluster manages both hosted lab clusters and physical production sites
+- **⚡ Rapid Development**: Hosted clusters provide fast, lightweight environments for development and testing
+- **🏭 Zero Touch Production**: RHACM ZTP enables automated deployment to physical infrastructure at scale
+- **🚀 GitOps Pipeline**: Complete development → testing → QA → production pipeline through GitOps
+- **📊 Unified Governance**: RHACM policies ensure consistency across lab and production environments
+- **🔒 Enterprise Integration**: Seamless integration with existing enterprise infrastructure and services
+
+**Enterprise Workflow Pattern:**
+1. **🧪 Develop & Test**: Use hosted lab clusters for rapid development and testing
+2. **📝 Define Infrastructure**: Create SiteConfig and PolicyGenTemplate resources in Git
+3. **🏭 Deploy to Production**: RHACM ZTP automatically provisions physical clusters
+4. **📊 Manage at Scale**: Single hub cluster manages hundreds of edge and production sites
 
 **Architecture Implementation Guides:**
 - **AWS Cloud Deployment**: Start with the [Getting Started tutorial](diataxis/tutorials/getting-started-cluster.md) for cloud-based deployment
-- **On-Premises Deployment**: Follow [Deploy to Bare Metal](diataxis/how-to-guides/deploy-to-bare-metal.md) to deploy on Dell/Cisco/HPE infrastructure
+- **Enterprise Pipeline**: Follow [Deploy to Bare Metal](diataxis/how-to-guides/deploy-to-bare-metal.md) to implement the lab → production workflow
 
 ## 🧭 **Navigation Guide**
 

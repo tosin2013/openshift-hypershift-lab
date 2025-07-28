@@ -1,46 +1,150 @@
-# How to Deploy to Bare Metal Clusters via RHACM Host Inventory
+# How to Deploy to Bare Metal Clusters via RHACM ZTP
 
-This guide explains how to extend the OpenShift HyperShift Lab workflow to deploy applications and configurations to bare metal clusters using Red Hat Advanced Cluster Management (RHACM) Host Inventory after testing in hosted control planes.
+This guide explains how to implement an enterprise-grade pipeline using the OpenShift HyperShift Lab for development and testing, then deploying to physical bare metal clusters using Red Hat Advanced Cluster Management (RHACM) Zero Touch Provisioning (ZTP).
 
-> **⚠️ Community Implementation Needed**: This workflow is not yet implemented in the current HyperShift Lab environment. We welcome contributions from community members who implement this pattern. Please share your findings and configurations via pull requests.
+> **⚠️ Community Implementation Needed**: This enterprise pipeline workflow is not yet fully implemented in the current HyperShift Lab environment. The architecture and workflow patterns described here represent the target state that we welcome community contributions to achieve. Please share your implementations, SiteConfig templates, and PolicyGenTemplate configurations via pull requests.
+
+## 🏗️ Architecture Overview
+
+This workflow implements the enterprise pattern shown in the [Architecture Overview](../../README.md#architecture-overview):
+
+```
+Lab Clusters (Hosted) → GitOps Repository → RHACM ZTP → Physical Production
+     ↓                        ↓                ↓              ↓
+  Development            SiteConfig +      Automated      Dell/Cisco/HPE
+   & Testing           PolicyGenTemplate   Deployment     Infrastructure
+```
 
 ## Prerequisites
 
+### Current Implementation
 - OpenShift HyperShift Lab environment with hosted clusters deployed
 - RHACM (Advanced Cluster Management) installed and configured
-- Access to bare metal infrastructure for cluster deployment
-- Understanding of RHACM Host Inventory concepts
 - Familiarity with the HyperShift Lab GitOps workflow
 
-## Workflow Overview
+### Additional Requirements for Full Enterprise Pipeline
+- **Physical Infrastructure**: Dell PowerEdge, Cisco UCS, or HPE ProLiant servers
+- **RHACM ZTP Components**: Zero Touch Provisioning pipeline configured
+- **GitOps Repository**: SiteConfig and PolicyGenTemplate resources
+- **Network Infrastructure**: Enterprise networking (switches, load balancers, firewalls)
+- **Storage Infrastructure**: SAN storage (NetApp, Pure Storage, Dell EMC)
+- **Identity Integration**: LDAP/Active Directory integration
 
-### The Complete Development-to-Production Pipeline
+## Enterprise Pipeline Workflow
+
+### The Complete Lab-to-Production Pipeline
 
 ```
-1. Development & Testing (Hosted Clusters)
-   ├── Test applications in dev-cluster-01
-   ├── Validate configurations in staging-cluster-01
-   └── Refine GitOps manifests
+1. Lab Environment (Hosted Clusters)
+   ├── lab-cluster: Development and experimentation
+   ├── dev-cluster: Application development
+   ├── test-cluster: Integration testing
+   └── Validate all configurations in lightweight hosted clusters
 
-2. Bare Metal Preparation (RHACM Host Inventory)
-   ├── Discover bare metal hosts
-   ├── Create host inventory
-   └── Define cluster specifications
+2. GitOps Repository (Infrastructure as Code)
+   ├── SiteConfig: Define physical cluster specifications
+   ├── PolicyGenTemplate: Define cluster policies and configurations
+   ├── Application Manifests: Tested application deployments
+   └── RHACM Policies: Governance and compliance rules
 
-3. Production Deployment (Bare Metal Clusters)
-   ├── Deploy OpenShift to bare metal via RHACM
-   ├── Apply tested configurations from hosted clusters
-   └── Monitor and validate production deployment
+3. RHACM ZTP Pipeline (Zero Touch Provisioning)
+   ├── Automated bare metal discovery
+   ├── Cluster provisioning via SiteConfig
+   ├── Policy application via PolicyGenTemplate
+   └── Application deployment via GitOps
+
+4. Physical Production Sites
+   ├── QA Environment: Physical clusters for quality assurance
+   ├── Production Environment: Full production clusters
+   ├── Edge Sites: Single-node OpenShift for edge computing
+   └── Enterprise integration (DNS, LDAP, SAN storage)
 ```
 
-### Why This Approach?
+### Why This Enterprise Approach?
 
-- **Cost Efficiency**: Test on resource-efficient hosted clusters
-- **Risk Reduction**: Validate configurations before bare metal deployment
-- **Consistency**: Same GitOps patterns from development to production
-- **Resource Optimization**: Use expensive bare metal only for production workloads
+- **🧪 Rapid Development**: Lightweight hosted clusters for fast iteration
+- **💰 Cost Efficiency**: Reserve expensive physical hardware for production
+- **🏭 Zero Touch Production**: Automated deployment eliminates manual errors
+- **📊 Centralized Management**: Single hub cluster manages all environments
+- **🔒 Consistent Governance**: Same policies from lab to production
+- **📈 Enterprise Scale**: Manage hundreds of edge and production sites
 
-## Step 1: Test and Validate in Hosted Clusters
+## 🚧 Implementation Status & Community Contributions Needed
+
+### What's Currently Implemented ✅
+- **Hub Cluster**: OpenShift cluster with RHACM and HyperShift
+- **Hosted Lab Clusters**: Lightweight clusters for development and testing
+- **GitOps Foundation**: ArgoCD and basic GitOps workflows
+- **Basic RHACM**: Cluster management capabilities
+
+### What Needs Community Implementation 🔨
+
+#### 1. RHACM ZTP Pipeline Components
+```yaml
+# Example SiteConfig template needed
+apiVersion: ran.openshift.io/v1
+kind: SiteConfig
+metadata:
+  name: production-site-01
+spec:
+  baseDomain: "production.company.com"
+  clusters:
+  - clusterName: "prod-cluster-01"
+    networkType: "OVNKubernetes"
+    nodes:
+    - hostName: "dell-server-01.company.com"
+      role: "master"
+      bmcAddress: "idrac-ip://192.168.1.10/system/1"
+      # Additional bare metal configuration
+```
+
+#### 2. PolicyGenTemplate Resources
+```yaml
+# Example PolicyGenTemplate needed
+apiVersion: ran.openshift.io/v1
+kind: PolicyGenTemplate
+metadata:
+  name: "production-policies"
+spec:
+  bindingRules:
+    sites: "production"
+  mcp: "master"
+  sourceFiles:
+    - fileName: "ClusterLogForwarder.yaml"
+      policyName: "logging-policy"
+    # Additional policy configurations
+```
+
+#### 3. Integration Scripts and Automation
+- **Bare metal discovery automation**
+- **SiteConfig generation from infrastructure inventory**
+- **PolicyGenTemplate creation from lab cluster configurations**
+- **Application migration scripts from hosted to physical clusters**
+
+#### 4. Enterprise Infrastructure Integration
+- **DNS integration** (Bind, Windows DNS)
+- **LDAP/Active Directory** authentication
+- **SAN storage** configuration (NetApp, Pure, Dell EMC)
+- **Network automation** (Cisco, Juniper switch configuration)
+
+### How to Contribute 🤝
+
+1. **Fork the Repository**: Start with the [Fork and Customize guide](fork-and-customize.md)
+2. **Implement Components**: Choose one of the needed components above
+3. **Test in Your Environment**: Validate with real bare metal infrastructure
+4. **Document Your Implementation**: Include configuration examples and troubleshooting
+5. **Submit Pull Request**: Share your implementation with the community
+
+### Community Implementation Examples Needed
+
+- **Dell PowerEdge** SiteConfig templates
+- **Cisco UCS** integration examples
+- **HPE ProLiant** configuration patterns
+- **Edge computing** Single Node OpenShift deployments
+- **Network automation** scripts for enterprise switches
+- **Storage integration** with enterprise SAN systems
+
+## Step 1: Current Implementation - Test and Validate in Hosted Clusters
 
 ### Develop in Hosted Clusters
 
