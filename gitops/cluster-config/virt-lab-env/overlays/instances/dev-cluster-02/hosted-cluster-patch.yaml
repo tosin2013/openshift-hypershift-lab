@@ -1,0 +1,26 @@
+apiVersion: hypershift.openshift.io/v1beta1
+kind: HostedCluster
+metadata:
+  name: example-instance
+  annotations:
+    cluster.open-cluster-management.io/managedcluster-name: example-instance
+    hypershift.openshift.io/cluster-api-provider: KubeVirt
+    # Add custom annotations here as needed
+spec:
+  # Override default availability policies if needed
+  controllerAvailabilityPolicy: HighlyAvailable
+  infrastructureAvailabilityPolicy: HighlyAvailable
+  # Platform-specific configuration
+  platform:
+    kubevirt:
+      # Additional platform configuration can be added here
+      baseDomainPassthrough: true
+  dns:
+    baseDomain: apps.tosins-dev-cluster.sandbox1271.opentlc.com
+# Additional service configurations can be added here
+# services:
+# - service: APIServer
+#   servicePublishingStrategy:
+#     type: LoadBalancer
+#     loadBalancer:
+#       strategy: External

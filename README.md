@@ -140,6 +140,32 @@ The script will automatically install missing tools, but you can pre-install:
 - **Red Hat Account**: For downloading pull secret
 - **Pull Secret**: Downloaded from [Red Hat Console](https://console.redhat.com/openshift/install/pull-secret)
 
+### Credential Management Prerequisites
+- **virt-creds Namespace**: Must exist with proper credentials for hosted cluster deployment
+- **virt-creds Secret**: Required secret containing `pullSecret` and `ssh-publickey` data
+- **External Secrets Operator**: Automatically deployed via GitOps for secure credential management
+
+**Setting up virt-creds (Required)**:
+```bash
+# Create the virt-creds namespace
+oc create namespace virt-creds
+
+# Create the virt-creds secret with your credentials
+oc create secret generic virt-creds \
+  --from-file=pullSecret=~/pull-secret.json \
+  --from-file=ssh-publickey=~/.ssh/id_rsa.pub \
+  -n virt-creds
+```
+
+**Note**: The `virt-creds` secret serves as the central credential store for all hosted clusters, following RHACM patterns for secure, centralized credential management.
+
+### External Secrets Operator Benefits
+- **🔒 Secure**: No secrets stored in Git repositories
+- **🔄 Automated**: Automatic secret synchronization from central store
+- **📋 GitOps Compliant**: Declarative secret management via ExternalSecret resources
+- **🎯 Centralized**: Single source of truth for all hosted cluster credentials
+- **🔧 Scalable**: Easy to add new hosted clusters without manual secret management
+
 ## 🎯 Quick Start
 
 ### 🆕 **First-Time Deployment** (Primary Path)
@@ -157,7 +183,15 @@ chmod +x openshift-3node-baremetal-cluster.sh
 # Step 2: Deploy your foundation cluster (DOMAIN AND NAME ARE REQUIRED)
 ./openshift-3node-baremetal-cluster.sh --name YOUR_CLUSTER_NAME --domain YOUR_DOMAIN.com --bare-metal
 
-# Step 3: Configure SSL certificates (after cluster deployment)
+# Step 3: Set up credential management (REQUIRED for hosted clusters)
+# Create virt-creds namespace and secret
+oc create namespace virt-creds
+oc create secret generic virt-creds \
+  --from-file=pullSecret=~/pull-secret.json \
+  --from-file=ssh-publickey=~/.ssh/id_rsa.pub \
+  -n virt-creds
+
+# Step 4: Configure SSL certificates (after cluster deployment)
 # Option A: With sudo privileges
 chmod +x configure-keys-on-openshift.sh
 sudo -E ./configure-keys-on-openshift.sh AWS_ACCESS_KEY AWS_SECRET_KEY podman YOUR_EMAIL
@@ -250,6 +284,17 @@ The setup script automatically configures the ingress controller wildcard policy
 - No additional certificate management required
 - Console access works immediately after deployment
 
+**Domain Pattern for Hosted Clusters**:
+- **Management cluster console**: `console-openshift-console.apps.{mgmt-cluster}.{base-domain}`
+- **Hosted cluster console**: `console-openshift-console.apps.{hosted-cluster}.apps.{mgmt-cluster}.{base-domain}`
+- **Example**: `console-openshift-console.apps.dev-cluster-01.apps.tosins-dev-cluster.sandbox1271.opentlc.com`
+
+**Cross-Cluster Compatibility**:
+The scripts automatically detect the management cluster's domain pattern, making them work across different environments:
+- **Lab environments**: `apps.lab-cluster.sandbox123.opentlc.com`
+- **Development**: `apps.dev-mgmt.company.com`
+- **Production**: `apps.prod-mgmt.company.com`
+
 **For Testing/Development**: All functionality works with standard cluster certificates
 
 **⚠️ Certificate Management Notes**:
@@ -263,36 +308,38 @@ The setup script automatically configures the ingress controller wildcard policy
 - [DNS Wildcard Certificate Limitations](https://serverfault.com/questions/104160/wildcard-ssl-certificate-for-second-level-subdomain)
 
 ```bash
-# 1. Set up shared credentials once (reusable across all hosted clusters)
-./scripts/setup-hosted-cluster-credentials.sh \
-  --interactive \
-  --create-ssh-key \
-  --namespace clusters \
-  test-hosted-cluster
+# 1. Set up External Secrets Operator (one-time setup)
+./scripts/setup-hosted-cluster-credentials.sh --setup-external-secrets
 
-# 2. Get the base domain from your existing cluster
-BASE_DOMAIN=$(oc get route console -n openshift-console -o jsonpath='{.spec.host}' | sed 's/console-openshift-console.apps.//' | cut -d'.' -f2-)
-echo "Using base domain: $BASE_DOMAIN"
-
-# 3. Create hosted cluster instances (reuses shared credentials)
+# 2. Create hosted cluster instances (External Secrets integrated automatically)
+# The script automatically:
+# - Detects the correct hosted cluster domain pattern from the management cluster
+# - Creates ExternalSecret resources for secure credential management
+# - Deploys the cluster with proper domain configuration
 ./scripts/create-hosted-cluster-instance.sh \
   --name dev-cluster-01 \
   --environment dev \
-  --domain $BASE_DOMAIN \
   --replicas 2
 
-# 4. Test the configuration locally before GitOps deployment
+# Optional: Override domain for different management clusters
+# ./scripts/create-hosted-cluster-instance.sh \
+#   --name dev-cluster-01 \
+#   --environment dev \
+#   --domain apps.my-mgmt-cluster.example.com \
+#   --replicas 2
+
+# 3. Test the configuration locally before GitOps deployment
 oc apply -k gitops/cluster-config/virt-lab-env/overlays/instances/dev-cluster-01
 
-# 5. Verify the hosted cluster is deploying
+# 4. Verify the hosted cluster is deploying
 oc get hostedcluster -n clusters
 oc get nodepool -n clusters
+oc get externalsecrets -n clusters
 
-# 6. Check ManagedCluster resources (compare with existing clusters)
-oc get managedcluster
-oc get managedcluster dev-cluster-01 -o yaml
+# 5. Check External Secrets are syncing
+oc get externalsecrets -n clusters | grep dev-cluster-01
 
-# 7. If local test is successful, commit to Git for ArgoCD
+# 6. If local test is successful, commit to Git for ArgoCD
 git add gitops/cluster-config/virt-lab-env/overlays/instances/dev-cluster-01
 git commit -m "Add dev-cluster-01 hosted cluster configuration"
 git push origin main
@@ -301,13 +348,12 @@ git push origin main
 ./scripts/create-hosted-cluster-instance.sh \
   --name staging-cluster-01 \
   --environment staging \
-  --domain $BASE_DOMAIN \
   --replicas 3
 
-# 8. Deploy using GitOps (if not already deployed)
-oc apply -f gitops/apps/openshift-hypershift-lab/cluster-config.yaml
+# 8. Deploy ApplicationSet for automatic hosted cluster discovery (if not already deployed)
+oc apply -f gitops/apps/openshift-hypershift-lab-apps/hosted-clusters-applicationset.yaml
 
-# 5. Access your hosted clusters
+# 9. Access your hosted clusters
 oc get secret dev-cluster-01-admin-kubeconfig -n clusters \
   -o jsonpath='{.data.kubeconfig}' | base64 -d > dev-cluster-kubeconfig
 export KUBECONFIG=dev-cluster-kubeconfig

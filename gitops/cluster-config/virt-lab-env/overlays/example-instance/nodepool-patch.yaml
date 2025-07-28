@@ -1,0 +1,36 @@
+apiVersion: hypershift.openshift.io/v1beta1
+kind: NodePool
+metadata:
+  name: example-instance-pool-1
+  labels:
+    cluster: example-instance
+    nodepool-type: worker
+spec:
+  # NodePool-specific configuration
+  replicas: 2
+
+  # Platform-specific configuration
+  platform:
+    kubevirt:
+      compute:
+        memory: 8Gi
+        cores: 4
+        qosClass: Burstable
+      networkInterfaceMultiqueue: Enable
+      rootVolume:
+        persistent:
+          size: 32Gi
+        type: Persistent
+      # Additional networks can be configured here
+      # additionalNetworks:
+      # - name: multus-network
+
+  # Management configuration
+  management:
+    autoRepair: true
+    replace:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+      strategy: RollingUpdate
+    upgradeType: Replace

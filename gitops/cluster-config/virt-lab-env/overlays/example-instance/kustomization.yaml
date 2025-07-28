@@ -1,0 +1,114 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: example-instance-overlay
+
+resources:
+- ../../base
+
+patches:
+# Patch HostedCluster with correct values
+- patch: |-
+    - op: replace
+      path: /metadata/name
+      value: example-instance
+    - op: replace
+      path: /spec/infraID
+      value: example-instance
+    - op: replace
+      path: /spec/pullSecret/name
+      value: pullsecret-cluster-example-instance
+    - op: replace
+      path: /spec/sshKey/name
+      value: sshkey-cluster-example-instance
+    - op: replace
+      path: /spec/dns/baseDomain
+      value: apps.tosins-dev-cluster.sandbox1271.opentlc.com
+  target:
+    kind: HostedCluster
+    name: CLUSTER_NAME_PLACEHOLDER
+
+# Patch NodePool with correct values
+- patch: |-
+    - op: replace
+      path: /metadata/name
+      value: example-instance-pool-1
+    - op: replace
+      path: /spec/clusterName
+      value: example-instance
+    - op: replace
+      path: /metadata/labels/cluster
+      value: example-instance
+  target:
+    kind: NodePool
+    name: CLUSTER_NAME_PLACEHOLDER-NODEPOOL_NAME_PLACEHOLDER
+
+# Patch ExternalSecrets with correct cluster name
+- patch: |-
+    - op: replace
+      path: /metadata/name
+      value: example-instance-pullsecret
+    - op: replace
+      path: /spec/target/name
+      value: pullsecret-cluster-example-instance
+  target:
+    kind: ExternalSecret
+    name: CLUSTER_NAME_PLACEHOLDER-pullsecret
+
+- patch: |-
+    - op: replace
+      path: /metadata/name
+      value: example-instance-sshkey
+    - op: replace
+      path: /spec/target/name
+      value: sshkey-cluster-example-instance
+  target:
+    kind: ExternalSecret
+    name: CLUSTER_NAME_PLACEHOLDER-sshkey
+
+configMapGenerator:
+  - name: cluster-config
+    literals:
+      # Cluster identification
+      - CLUSTER_NAME=example-instance
+      - CLUSTER_NAMESPACE=clusters
+      - ENVIRONMENT=lab
+      - CLUSTERSET=default
+
+      # Release configuration
+      - RELEASE_IMAGE=quay.io/openshift-release-dev/ocp-release:4.18.20-x86_64
+
+      # DNS and domain configuration
+      - BASE_DOMAIN=apps.tosins-dev-cluster.sandbox1271.opentlc.com
+      - BASE_DOMAIN_PASSTHROUGH=true
+
+      # Network configuration
+      - CLUSTER_NETWORK_CIDR=10.132.0.0/14
+      - SERVICE_NETWORK_CIDR=172.31.0.0/16
+      - NETWORK_TYPE=OVNKubernetes
+
+      # Security configuration (managed by External Secrets)
+      # Pull secret and SSH key names are automatically generated
+
+      # NodePool configuration
+      - NODEPOOL_NAME=pool-1
+      - NODEPOOL_FULL_NAME=example-instance-pool-1
+      - NODEPOOL_REPLICAS=2
+      - NODEPOOL_MEMORY=8Gi
+      - NODEPOOL_CORES=4
+
+labels:
+  - pairs:
+      environment: lab
+      cluster: example-instance
+      managed-by: kustomize
+
+# Namespace for this cluster instance
+namespace: clusters
+labels:
+- includeSelectors: true
+  pairs:
+    cluster: example-instance
+    environment: lab
+    managed-by: kustomize

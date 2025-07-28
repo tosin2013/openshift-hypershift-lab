@@ -1,0 +1,30 @@
+apiVersion: hypershift.openshift.io/v1beta1
+kind: NodePool
+metadata:
+  name: CLUSTER_NAME_PLACEHOLDER-NODEPOOL_NAME_PLACEHOLDER
+  namespace: CLUSTER_NAMESPACE_PLACEHOLDER
+  labels:
+    cluster: CLUSTER_NAME_PLACEHOLDER
+    environment: dev
+    nodepool-type: worker
+spec:
+  clusterName: CLUSTER_NAME_PLACEHOLDER
+  replicas: 3
+  management:
+    upgradeType: Replace
+    autoRepair: false
+  platform:
+    type: KubeVirt
+    kubevirt:
+      compute:
+        memory: 8Gi
+        cores: 4
+      rootVolume:
+        type: Persistent
+        persistent:
+          size: 32Gi
+          storageClass: gp3-csi
+      networkInterfaceMultiqueue: Enable
+  release:
+    image: quay.io/openshift-release-dev/ocp-release:4.18.20-x86_64
+  nodeDrainTimeout: 0s

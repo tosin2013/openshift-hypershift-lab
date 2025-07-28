@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: hosted-control-plane-base
+
+resources:
+  - namespace.yaml
+  - hosted-cluster.yaml
+  - nodepool.yaml
+  - externalsecrets.yaml
+  - workload-namespace.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: hosted-control-plane
+      app.kubernetes.io/part-of: openshift-lab
+      app.kubernetes.io/managed-by: kustomize
+
+# Default namespace - can be overridden in overlays
+namespace: clusters
+
+# Transformations for parameterization
+transformers:
+  - |-
+    apiVersion: builtin
+    kind: ReplacementTransformer
+    metadata:
+      name: cluster-parameter-replacements
+    replacements: []

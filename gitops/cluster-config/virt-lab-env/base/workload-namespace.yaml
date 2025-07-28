@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: workloads
+  labels:
+    name: workloads
+    workload-type: application
+  annotations:
+    openshift.io/description: "Namespace for application workloads on hosted cluster"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: workload-quota
+  namespace: workloads
+spec:
+  hard:
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+    persistentvolumeclaims: "5"
+    pods: "20"
