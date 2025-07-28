@@ -8,6 +8,8 @@ resources:
   - namespace.yaml
   - operatorgroup.yaml
   - subscription.yaml
+  - operatorconfig.yaml
+  - virt-creds-rbac.yaml
 
 labels:
   - pairs:

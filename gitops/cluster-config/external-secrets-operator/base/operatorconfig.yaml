@@ -1,0 +1,22 @@
+apiVersion: operator.external-secrets.io/v1alpha1
+kind: OperatorConfig
+metadata:
+  name: cluster
+  namespace: external-secrets-operator
+spec:
+  # Deploy the controller to watch all namespaces
+  watchNamespace: ""
+  # Enable metrics
+  metrics:
+    listen:
+      addr: "0.0.0.0:8080"
+  # Configure the controller
+  controller:
+    image: ghcr.io/external-secrets/external-secrets:v0.11.0
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
