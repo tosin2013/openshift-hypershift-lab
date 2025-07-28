@@ -27,6 +27,14 @@ Transform your foundation cluster into a scalable, multi-tenant platform:
 
 **👉 [Get Started with Modular Hosted Clusters](docs/modular-hosted-clusters/README.md)**
 
+### 🔧 **Customization for Your Environment**
+
+Want to adapt this lab for your own infrastructure and domain?
+
+- **🍴 Fork and Customize**: [Complete guide](docs/diataxis/how-to-guides/fork-and-customize.md) for adapting the lab to your environment
+- **🏗️ Bare Metal Extension**: [Deploy to bare metal](docs/diataxis/how-to-guides/deploy-to-bare-metal.md) using RHACM Host Inventory
+- **🤝 Community Contributions**: Share your implementations and improvements back to the community
+
 ## 🚀 Features
 
 ### Core Capabilities
@@ -271,8 +279,8 @@ Once you have a foundation cluster, you can expand it into a multi-tenant platfo
 **Certificate Limitation Notice**: Hosted clusters use nested subdomain patterns that exceed standard wildcard certificate coverage.
 
 **Example Issue**:
-- Standard wildcard certificate: `*.apps.metal-cluster.sandbox1271.opentlc.com`
-- Hosted cluster console URL: `console-openshift-console.apps.dev-cluster-01.apps.metal-cluster.sandbox1271.opentlc.com`
+- Standard wildcard certificate: `*.apps.management-cluster.example.com`
+- Hosted cluster console URL: `console-openshift-console.apps.dev-cluster-01.apps.management-cluster.example.com`
 - **Result**: Certificate mismatch causing SSL errors
 
 **✅ Automated Solution (Applied by Setup Script)**:
@@ -287,12 +295,13 @@ The setup script automatically configures the ingress controller wildcard policy
 **Domain Pattern for Hosted Clusters**:
 - **Management cluster console**: `console-openshift-console.apps.{mgmt-cluster}.{base-domain}`
 - **Hosted cluster console**: `console-openshift-console.apps.{hosted-cluster}.apps.{mgmt-cluster}.{base-domain}`
-- **Example**: `console-openshift-console.apps.dev-cluster-01.apps.tosins-dev-cluster.sandbox1271.opentlc.com`
+- **Example**: `console-openshift-console.apps.dev-cluster-01.apps.management-cluster.example.com`
 
 **Cross-Cluster Compatibility**:
 The scripts automatically detect the management cluster's domain pattern, making them work across different environments:
-- **Lab environments**: `apps.lab-cluster.sandbox123.opentlc.com`
+- **Lab environments**: `apps.lab-cluster.example.com`
 - **Development**: `apps.dev-mgmt.company.com`
+- **Production**: `apps.prod-mgmt.organization.com`
 - **Production**: `apps.prod-mgmt.company.com`
 
 **For Testing/Development**: All functionality works with standard cluster certificates
@@ -452,6 +461,16 @@ export PULL_SECRET_PATH="/path/to/pull-secret.json"
 
 ## 📚 Documentation Structure
 
+### 🎯 **Comprehensive User Documentation** (Diátaxis Framework)
+**[📖 Complete Documentation](docs/diataxis/README.md)** - Structured documentation following the Diátaxis framework:
+
+- **📚 Tutorials**: Learning-oriented guides for getting started with the HyperShift Lab
+- **🛠️ How-To Guides**: Problem-oriented solutions for specific tasks
+- **🔧 Developer Guides**: Contribution-oriented development and customization
+- **📖 Reference**: Information-oriented technical specifications
+- **🧠 Explanations**: Understanding-oriented architectural concepts
+
+### 📋 **Technical Documentation**
 - **[Configuration Guide](docs/CONFIGURATION.md)**: Detailed configuration options
 - **[Deployment Guide](docs/DEPLOYMENT.md)**: Step-by-step deployment instructions
 - **[Validation Guide](docs/VALIDATION.md)**: Validation and verification features
@@ -459,6 +478,9 @@ export PULL_SECRET_PATH="/path/to/pull-secret.json"
 - **[HyperShift Troubleshooting](docs/HYPERSHIFT-TROUBLESHOOTING.md)**: Quick fixes for hosted cluster issues
 - **[Ingress Wildcard Policy Fix](docs/hypershift-ingress-wildcard-policy-fix.md)**: Critical fix for hosted cluster consoles
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)**: Common issues and solutions
+
+### 🏗️ **Modular Hosted Clusters Framework**
+- **[Modular Framework Documentation](docs/modular-hosted-clusters/README.md)**: Advanced multi-instance deployment patterns
 
 ## 🤝 Contributing
 
