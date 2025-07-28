@@ -43,6 +43,7 @@ This documentation follows the [Diátaxis framework](https://diataxis.fr/) to pr
 
 - [HyperShift Lab Design](explanations/hypershift-lab-design.md) - Project philosophy and architectural decisions
 - [Architecture Overview](explanations/architecture-overview.md) - System design and component relationships
+- [Enterprise Pipeline Architecture](explanations/enterprise-pipeline-architecture.md) - Lab → Production workflow design (community implementation needed)
 
 ## Audience Separation
 

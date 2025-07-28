@@ -73,7 +73,7 @@ graph TB
     WN3 --> ELB
 ```
 
-### **Enterprise Pipeline: Lab Clusters → Physical Production (RHACM ZTP)**
+### **[Enterprise Pipeline: Lab Clusters → Physical Production (RHACM ZTP)](diataxis/explanations/enterprise-pipeline-architecture.md)**
 ```mermaid
 graph TB
     subgraph "Hub Cluster (Management Infrastructure)"
