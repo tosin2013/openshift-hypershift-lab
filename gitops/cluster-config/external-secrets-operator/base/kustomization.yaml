@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: external-secrets-operator-base
+
+resources:
+  - namespace.yaml
+  - operatorgroup.yaml
+  - subscription.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: external-secrets-operator
+      app.kubernetes.io/part-of: openshift-hypershift-lab
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/component: operator
+
+# Default namespace for operator resources
+namespace: external-secrets-operator
