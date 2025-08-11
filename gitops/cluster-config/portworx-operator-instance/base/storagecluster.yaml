@@ -24,13 +24,7 @@ spec:
     args:
       webhook-controller: "true"
   autopilot:
-    enabled: true
-    providers:
-    - name: default
-      params:
-        ## TODO: Populate the cluster routing domain in the overlay
-        url: https://thanos-querier-openshift-monitoring.CLUSTER_DOMAIN
-      type: prometheus
+    enabled: false
   runtimeOptions:
     default-io-profile: "6"
   csi:
