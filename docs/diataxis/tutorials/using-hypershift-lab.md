@@ -89,6 +89,7 @@ In ArgoCD, you'll see applications that manage your lab:
 3. **advanced-cluster-management**: Deploys RHACM
 4. **multicluster-engine**: Enables multi-cluster capabilities
 5. **hosted-clusters-applicationset**: Automatically manages hosted clusters
+6. **portworx-operator**: Deploys Portworx
 
 ### Understanding GitOps Workflow
 
